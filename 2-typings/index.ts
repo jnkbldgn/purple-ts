@@ -49,11 +49,11 @@ function toWords(number: number | string, asOrdinal?: boolean): string {
 
 function generateWords(number: number, words: string[] = []): string {
     let remainder: number = 0;
-    let word: string | undefined;
+    let word: string;
 
     // We’re done
     if (number === 0) {
-        return words.join(' ').replace(/,$/, '');
+        return !words ? 'zero' : words.join(' ').replace(/,$/, '');
     }
 
     // If negative, prepend “minus”
@@ -97,13 +97,12 @@ function generateWords(number: number, words: string[] = []): string {
 
     } else if (number <= MAX) {
         remainder = number % ONE_QUADRILLION;
-        word = generateWords(Math.floor(number / ONE_QUADRILLION)) +
-        ' quadrillion,';
+        word = generateWords(Math.floor(number / ONE_QUADRILLION)) + ' quadrillion,';
+    } else {
+        throw new RangeError('Number exceeds maximum safe value');
     }
 
-    if(word) {
-        words.push(word);
-    }
+    words.push(word);
     return generateWords(remainder, words);
 }
 
